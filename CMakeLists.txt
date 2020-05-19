@@ -10,4 +10,7 @@ project(RiskRoll
         winning, losing, or having a draw in a single dice roll."
         LANGUAGES CXX)
 
-add_executable(main main.cpp)
+add_executable(RiskRoll main.cpp)
+
+target_compile_features(RiskRoll PUBLIC cxx_std_11)
+set_target_properties(RiskRoll PROPERTIES CXX_EXTENSIONS OFF)
