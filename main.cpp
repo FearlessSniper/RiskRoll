@@ -120,7 +120,7 @@ DicePair_v getDiceCombinations(int& ndice) {
 }
 
 template <typename T,
-          typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+          typename std::enable_if<std::is_integral<T>::value, int>::type>
 T getNCombinations(T n, T r, bool repetitive) {
     if (repetitive) {
         return factorial(r + n - 1) / (factorial(r) * factorial(n - 1));
@@ -129,7 +129,7 @@ T getNCombinations(T n, T r, bool repetitive) {
 }
 
 template <typename T,
-          typename std::enable_if<std::is_integral<T>::value, int>::type = 0>
+          typename std::enable_if<std::is_integral<T>::value, int>::type>
 inline T factorial(T n) {
     if (n == 0)
         return 1;
