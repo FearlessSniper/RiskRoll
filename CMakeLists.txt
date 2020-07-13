@@ -10,7 +10,20 @@ project(RiskRoll
         winning, losing, or having a draw in a single dice roll."
         LANGUAGES CXX)
 
-add_executable(RiskRoll main.cpp)
+include(CMakePrintHelpers)
+
+add_subdirectory(src)
+add_subdirectory(apps/compute-combinations)
+add_subdirectory(apps/compute-possibility)
+
+find_library(GMPXX gmpxx)
+find_library(GMP gmp)
+cmake_print_variables(RiskRoll GMP GMPXX)
+
+
+target_link_libraries(RiskRoll ${GMP} ${GMPXX})
+target_link_libraries(compute-combinations RiskRoll ${GMP} ${GMPXX})
+target_link_libraries(compute-possibility RiskRoll ${GMP} ${GMPXX})
 
 target_compile_features(RiskRoll PUBLIC cxx_std_11)
 set_target_properties(RiskRoll PROPERTIES CXX_EXTENSIONS OFF)
