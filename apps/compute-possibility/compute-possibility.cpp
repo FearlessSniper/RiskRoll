@@ -7,7 +7,7 @@
 #include "DicePair.h"
 #include "DicePairCmp.h"
 
-int main(int argc, char** argv) {
+int main() {
     using std::cin;
     using std::cout;
     using std::endl;

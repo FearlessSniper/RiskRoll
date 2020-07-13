@@ -2,7 +2,7 @@
 #include <gmpxx.h>
 #include "DPPermuGen.h"
 
-int main (int argc, char **argv) {
+int main () {
     using std::cin;
     using std::cout;
     using std::flush;

@@ -35,11 +35,15 @@ class DPPermuGen {
 
 // Specializing std::iterator_traits must be done outside the RiskRoll
 // namespace as iterator_traits is in std namespace.
+// Trusty g++ complains about not enclosing the specialization in the
+// namespace (std).
+namespace std {
 template <>
-struct std::iterator_traits<RiskRoll::DPPermuGen::iterator> {
+struct iterator_traits<RiskRoll::DPPermuGen::iterator> {
     typedef int difference_type;
     typedef RiskRoll::DicePair_v value_type;
     typedef RiskRoll::DicePair_v* pointer;
     typedef RiskRoll::DicePair_v& reference;
-    typedef std::forward_iterator_tag iterator_catagory;
+    typedef forward_iterator_tag iterator_catagory;
 };
+}  // namespace std
