@@ -14,10 +14,14 @@ The possibilities is computed by trying all possible values of the dices. This w
 |------------------|------------------|
 | Linux            | Yes              |
 | Windows          | Yes (With MinGW) |
-|                  |                  |
+| macOS            | Yes              |
 
 ## Installing GMPlib
 The GMP library is a dependency for the RiskRoll project. To install the GMP library:
+- macOS:
+    ```Shell
+    $ brew install gmp
+    ```
 - Ubuntu:
     ```Shell
     $ apt-get install libgmpdev
@@ -30,9 +34,32 @@ The GMP library is a dependency for the RiskRoll project. To install the GMP lib
 ## Building the project
 This project uses CMake to build. Install CMake before building.
 ```Shell
-$ cmake .
+$ mkdir build && cd build
+$ cmake ..
 $ cmake --build .
 ```
+
+## Running the project
+The build products can be found in the apps folder in build. The **compute-combinations** app computes how many possible outcomes for a given number of dices (6 ^ n). While the **compute-possibility** app tells the probability of winning, losing, or draw in a dice roll.
+
+Example:
+```Shell
+$ ./compute-combinations
+Please enter the number of dices: 3
+There are 216 for 3 dices.
+```
+```Shell
+$ ./compute-possibility
+Please enter the number of dices for the attacker: 3
+Please enter the number of dices for the defender: 2
+The attacker has 3 dices.
+The defender has 2 dices.
+Therefore there would be 7776 possibilities.
+The attacker wins 2890 times (37.2%),
+The defender wins 2275 times (29.3%),
+Draws 2611 times. (33.6%).
+```
+
 
 [1]: <https://en.wikipedia.org/wiki/Risk_(game)>
 [2]: <https://en.wikipedia.org/wiki/Risk_(game)#Gameplay>
