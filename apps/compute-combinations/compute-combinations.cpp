@@ -11,5 +11,5 @@ int main () {
     cout << "Please enter the number of dices: " << flush;
     cin >> diceCount;
     mpz_class nCombinations = RiskRoll::DPPermuGen::count(diceCount);
-    cout << "There are " << nCombinations << " for " << diceCount << " dices." << endl;
+    cout << "There are " << nCombinations << " combinations for " << diceCount << " dices." << endl;
 }
