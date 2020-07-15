@@ -6,6 +6,7 @@
 #include "DPPermuGen.h"
 #include "DicePair.h"
 #include "DicePairCmp.h"
+#include "progress-bar/progress-bar.h"
 
 int main() {
     using std::cin;
@@ -41,6 +42,19 @@ int main() {
             std::unique_ptr<DPPermuGen>(new DPPermuGen(player->diceCount));
         player->permutations = (*(player->gen_ptr)).count();
     }
+    // Moved the line to compute total possibilities above progres bar
+    // So that I can get the number of total
+    mpz_class totalPossibilities =
+        attacker.permutations * defender.permutations;
+
+    // Adding progress bar here
+    // Initiallize the ProgressBar
+    struct ProgressBar::Details details = {
+        std::string("Computing..."), 0, totalPossibilities.get_ui()
+    };
+    RiskRoll::ProgressBar prog_bar(std::shared_ptr<std::ostream>(&std::cout),
+                         std::shared_ptr<struct ProgressBar::Details>(&details));
+    prog_bar.update();
 
     // Test all possibilities and tally the results
     for (DicePair_v atk_dpv : *(attacker.gen_ptr)) {
@@ -51,11 +65,14 @@ int main() {
                 result.loses++;
             else if (atk_dpv == dfd_dpv)
                 result.draws++;
+            // Refresh the progress bar.
+            details.progress++;
+            prog_bar.update();
         }
     }
+    std::cout << std::endl;
+
     // Calculate the percentage of wins, loses and draws
-    mpz_class totalPossibilities =
-        attacker.permutations * defender.permutations;
     // Turns out it is required to first convert both number to float,
     // then you can get a result with float
     result_percentage.win = static_cast<mpf_class>(result.wins) /

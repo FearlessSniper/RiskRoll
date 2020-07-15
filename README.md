@@ -1,9 +1,9 @@
 # RiskRoll
 
-[![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=master)](https://travis-ci.com/FearlessSniper/RiskRoll)
+[![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=master)](https://travis-ci.com/FearlessSniper/RiskRoll) [![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=develop)](https://travis-ci.com/FearlessSniper/RiskRoll)
 
 ## Overview
-*RiskRoll* is a library written in C++ that aims to compute the possibilities in a *[dice roll]([2])* in a game of *[Risk][1]*.
+*RiskRoll* is a library written in C++ that aims to compute the possibilities in a *[dice roll][2]* in a game of *[Risk][1]*.
 
 ## Implementation
 The possibilities is computed by trying all possible values of the dices. This would result in large runtime when the number of dices is over 3 -- the practical number of dices in game. Large number support with GMP library ([*The GNU Multiple Precision Arithmetic Library*][3]) is added to contain the exponential growth of the number of total possible outcomes. (*Though computing such large number is very unlikely to succeed*)
@@ -43,12 +43,12 @@ $ cmake --build .
 The build products can be found in the apps folder in build. The **compute-combinations** app computes how many possible outcomes for a given number of dices (6 ^ n). While the **compute-possibility** app tells the probability of winning, losing, or draw in a dice roll.
 
 Example:
-```Shell
+```
 $ ./compute-combinations
 Please enter the number of dices: 3
 There are 216 for 3 dices.
 ```
-```Shell
+```
 $ ./compute-possibility
 Please enter the number of dices for the attacker: 3
 Please enter the number of dices for the defender: 2
