@@ -13,6 +13,8 @@ addons:
     packages:
       - g++
       - cmake
+      - libgmp-dev
+    update: true
 
 script:
   - cmake .

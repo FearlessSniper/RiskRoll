@@ -24,7 +24,7 @@ The GMP library is a dependency for the RiskRoll project. To install the GMP lib
     ```
 - Ubuntu:
     ```Shell
-    $ apt-get install libgmpdev
+    $ apt-get install libgmp-dev
     ```
 - Arch Linux:
     ```Shell
