@@ -20,11 +20,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-Wall -Wextra)
 endif()
 
+# Find GMP and GMPXX library which is needed for large number support
 find_library(GMP gmp)
 find_library(GMPXX gmpxx)
 
-cmake_print_variables(RiskRoll GMP GMPXX)
-
+# Build the library itself and the apps
 add_subdirectory(src)
 add_subdirectory(apps/compute-combinations)
 add_subdirectory(apps/compute-possibility)

@@ -1,8 +1,8 @@
-#include <gmpxx.h>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <gmpxx.h>
 #include "DPPermuGen.h"
 #include "DicePair.h"
 #include "DicePairCmp.h"
@@ -49,11 +49,14 @@ int main() {
 
     // Adding progress bar here
     // Initiallize the ProgressBar
-    struct ProgressBar::Details details = {
-        std::string("Computing..."), 0, totalPossibilities.get_ui()
-    };
-    RiskRoll::ProgressBar prog_bar(std::shared_ptr<std::ostream>(&std::cout),
-                         std::shared_ptr<struct ProgressBar::Details>(&details));
+    // struct ProgressBar::Details details = {
+    //     std::string("Computing..."), 0, totalPossibilities.get_ui()
+    // };
+    // Error: Program tries to destruct std::cout which is not owned by this scope
+    // TODO: Change std::shared_ptr<std::ostream> to std::ostream*
+    std::shared_ptr<struct ProgressBar::Details> details_ptr(new struct ProgressBar::Details);
+    *details_ptr = {std::string("Computing..."), 0, totalPossibilities.get_ui()};
+    RiskRoll::ProgressBar prog_bar(&std::cout, details_ptr);
     prog_bar.update();
 
     // Test all possibilities and tally the results
@@ -66,7 +69,7 @@ int main() {
             else if (atk_dpv == dfd_dpv)
                 result.draws++;
             // Refresh the progress bar.
-            details.progress++;
+            details_ptr->progress++;
             prog_bar.update();
         }
     }
@@ -104,4 +107,5 @@ int main() {
          << result_percentage.lose << "%)," << endl;
     cout << "Draws " << result.draws << " times. (" << result_percentage.draw
          << "%)." << endl;
+    return 0;
 }

@@ -1,6 +1,6 @@
 # RiskRoll
 
-[![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=master)](https://travis-ci.com/FearlessSniper/RiskRoll) [![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=develop)](https://travis-ci.com/FearlessSniper/RiskRoll)
+[![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=master)](https://travis-ci.com/FearlessSniper/RiskRoll) [![Build Status](https://travis-ci.com/FearlessSniper/RiskRoll.svg?branch=develop)](https://travis-ci.com/FearlessSniper/RiskRoll) [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/FearlessSniper/RiskRoll)
 
 ## Overview
 *RiskRoll* is a library written in C++ that aims to compute the possibilities in a *[dice roll][2]* in a game of *[Risk][1]*.

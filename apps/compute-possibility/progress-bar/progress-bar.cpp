@@ -9,7 +9,7 @@
 #include "progress-bar.h"
 
 namespace RiskRoll {
-ProgressBar::ProgressBar(std::shared_ptr<std::ostream> ptr_outstream,
+ProgressBar::ProgressBar(std::ostream *ptr_outstream,
             std::shared_ptr<struct Details> ptr_details){
     this->ptr_outstream = ptr_outstream;
     this->ptr_details = ptr_details;
@@ -29,7 +29,9 @@ void ProgressBar::update() {
     // When the terminal does not have enough space
     if (line.size() > this->t_width)
         // Replace the last three characters with "..."
-        line.replace(line.size() - 3, 3, "...");
+        // Bad: Should replace three characters preceding
+        //      terminal width
+        line.replace(this->t_width - 3, 3, "...");
     // Add a carriage return to overwrite the last line.
     *(this->ptr_outstream) << '\r' << line;
 }
