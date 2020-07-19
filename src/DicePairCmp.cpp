@@ -83,7 +83,7 @@ short int cmpDicePair_v(DicePair_v a, DicePair_v b) {
     std::sort(b.begin(), b.end());
     auto r_it_a = a.rbegin(), r_it_b = b.rbegin(), r_it_a_end = a.rend(),
          r_it_b_end = b.rend();
-    short int points;
+    short int points = 0;
     for (; r_it_a != r_it_a_end && r_it_b != r_it_b_end; r_it_a++, r_it_b++) {
         if (*r_it_a > *r_it_b)
             points++;

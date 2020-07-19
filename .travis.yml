@@ -1,6 +1,10 @@
 language: cpp
-os: linux
-dist: trusty
+
+os:
+  - linux
+  - windows
+
+dist: bionic
 
 compiler:
   - gcc
@@ -16,7 +20,68 @@ addons:
       - libgmp-dev
     update: true
 
+before_install:
+  - |-
+    # Install MSYS2
+    case $TRAVIS_OS_NAME in
+      windows)
+        [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
+        choco uninstall -y mingw
+        choco upgrade --no-progress -y msys2
+        export msys2='cmd //C RefreshEnv.cmd '
+        export msys2+='& set MSYS=winsymlinks:nativestrict '
+        export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
+        export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+        export msys2+=" -msys2 -c "\"\$@"\" --"
+        $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
+        ## Install more MSYS2 packages from https://packages.msys2.org/base here
+        taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
+        export PATH=/C/tools/msys64/mingw64/bin:$PATH
+        export MAKE=mingw32-make  # so that Autotools can find it
+        ;;
+    esac
+
+before_cache:
+  - |-
+    case $TRAVIS_OS_NAME in
+      windows)
+        # https://unix.stackexchange.com/a/137322/107554
+        $msys2 pacman --sync --clean --noconfirm
+        ;;
+    esac
+
+install:
+  - |-
+    case $TRAVIS_OS_NAME in
+      windows)
+        # Install needed packages for MSYS2
+        # gmp, cmake, g++
+        $msys2 pacman -S mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
+        ;;
+    esac
+
+cache:
+  directories:
+    - $HOME/AppData/Local/Temp/chocolatey
+    - /C/tools/msys64
+
 script:
   - mkdir build && cd build
-  - cmake ..
+  - cmake -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
   - cmake --build .
+  - |-
+    case $TRAVIS_OS_NAME in
+      windows)
+        # Pack up Windows binaries
+        tar -czf riskroll-windows-x86_64.tar.gz apps/compute-possibility/compute-possibility.exe apps/compute-combinations/compute-combinations.exe src/libRiskRoll.*\
+        ;;
+    esac
+
+deploy:
+  provider: releases
+  api_key:
+    secure: AkZKBHzQa9kWCblzt+ma+/eEdPi3s0k0fHigooGEELxyma3crdEAYSGUvseMj4+ENKQk5dlVZbm/L2ps0OdPKlqjgFHwWVZhMYHqiwbestCaUfbIrk7X//nG0psB6F8yeU6byEOv7Hn9QKtn1ZdeLrygQAmnHdOrIUY+9UZ0L/kId7fgjjjFaKP5r88rfi2iUnlrw+n3qShcsvCUCU64J7SHQfpHx0qBdrK4htGv3c0BBpVN2wmwrFRI+kJ0sZxNoFsIGSK1LePPzd9FMIxPVM3wTDP31A4oJs9fv26gaNkmaqejWkiLg6Z59CbUDkvJCgTP7uk5Ru7n0VRgVcX/WbPsqyx8MaMBThPBAQoLEHX4Vq1q3Orno7ae+iofBDIEC5NFIKYBlrje/6xYN1fWFFIhp04CScwDYjHMnxmBFYJPDht3hVOcYIhxd7WlOvC3YGe5VQZS1nBxtrFWhrhoBUs8Uoaak5X+yRUjgwZ5dtROB9qfLJlsiZnVKK+8cB2ByJGhrEgqgdpc+jOU71BxbcsatshEkV9ad30MiQRWwcmAFiXMQq9cMopzgB6+rgDOpnJkt0t9y4wdvq5NJ5Yo7Q4REh5ClvyOBz5dl4qUDgYxUHLjy0FqVxIJraQ05pvBAcHHf/b1xwhFaejzCPTllTsXrjcPMCMjlT9vOgXeyH0=
+  file: riskroll-windows-x86_64.tar.gz
+  on:
+    repo: FearlessSniper/RiskRoll
+  skip_cleanup: "true"
