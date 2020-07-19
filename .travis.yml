@@ -17,5 +17,6 @@ addons:
     update: true
 
 script:
-  - cmake .
+  - mkdir build && cd build
+  - cmake ..
   - cmake --build .

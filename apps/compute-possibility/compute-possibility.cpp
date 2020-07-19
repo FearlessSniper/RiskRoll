@@ -1,8 +1,8 @@
+#include <gmpxx.h>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <gmpxx.h>
 #include "DPPermuGen.h"
 #include "DicePair.h"
 #include "DicePairCmp.h"
@@ -52,10 +52,13 @@ int main() {
     // struct ProgressBar::Details details = {
     //     std::string("Computing..."), 0, totalPossibilities.get_ui()
     // };
-    // Error: Program tries to destruct std::cout which is not owned by this scope
+    // Error: Program tries to destruct std::cout which is not owned by this
+    // scope
     // TODO: Change std::shared_ptr<std::ostream> to std::ostream*
-    std::shared_ptr<struct ProgressBar::Details> details_ptr(new struct ProgressBar::Details);
-    *details_ptr = {std::string("Computing..."), 0, totalPossibilities.get_ui()};
+    std::shared_ptr<struct ProgressBar::Details> details_ptr(
+        new struct ProgressBar::Details);
+    *details_ptr = {std::string("Computing..."), 0,
+                    totalPossibilities.get_ui()};
     RiskRoll::ProgressBar prog_bar(&std::cout, details_ptr);
     prog_bar.update();
 

@@ -1,5 +1,5 @@
-#include <algorithm>
 #include "DicePairCmp.h"
+#include <algorithm>
 
 namespace RiskRoll {
 // Tells whether the defender wins

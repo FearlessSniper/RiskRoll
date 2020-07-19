@@ -18,7 +18,7 @@ class ProgressBar {
     };
     // Create a progress bar with output stream;
     // t_width: terminal width
-    ProgressBar(std::ostream *ptr_outstream,
+    ProgressBar(std::ostream* ptr_outstream,
                 std::shared_ptr<struct Details> details);
     // As the Details structure is passed by a pointer,
     // updating the structure passed would be known by the
@@ -34,7 +34,7 @@ class ProgressBar {
     static unsigned short getConsoleWidth();
 
    private:
-    std::ostream *ptr_outstream;
+    std::ostream* ptr_outstream;
     std::shared_ptr<struct Details> ptr_details;
     unsigned int t_width;
 };

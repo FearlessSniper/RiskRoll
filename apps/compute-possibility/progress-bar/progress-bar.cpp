@@ -9,8 +9,8 @@
 #include "progress-bar.h"
 
 namespace RiskRoll {
-ProgressBar::ProgressBar(std::ostream *ptr_outstream,
-            std::shared_ptr<struct Details> ptr_details){
+ProgressBar::ProgressBar(std::ostream* ptr_outstream,
+                         std::shared_ptr<struct Details> ptr_details) {
     this->ptr_outstream = ptr_outstream;
     this->ptr_details = ptr_details;
     this->t_width = ProgressBar::getConsoleWidth();
@@ -18,20 +18,30 @@ ProgressBar::ProgressBar(std::ostream *ptr_outstream,
 
 void ProgressBar::update() {
     // Implicit conversion to float using 100.0 instead of 100
-    // No enough: (unsigned int) * (unsigned int) = (unsigned int); (unsigned int) * (float) = (float)
-    float percent = static_cast<float>((this->ptr_details)->progress) / static_cast<float>((this->ptr_details)->full) * 100.0;
-    std::string prog_bar = '[' + std::string(static_cast<int>(percent / 100 * 50), '#') +
-                           std::string(static_cast<int>((100 - percent) / 100 * 50), '-') +
-                           ']';
+    // No enough: (unsigned int) * (unsigned int) = (unsigned int); (unsigned
+    // int) * (float) = (float)
+    float percent = static_cast<float>((this->ptr_details)->progress) /
+                    static_cast<float>((this->ptr_details)->full) * 100.0;
+    std::string prog_bar =
+        '[' + std::string(static_cast<int>(percent / 100 * 50), '#') +
+        std::string(static_cast<int>((100 - percent) / 100 * 50), '-') + ']';
     std::string line = (this->ptr_details)->message + ' ' + prog_bar + ' ' +
-                       std::to_string(percent) + "% | " + std::to_string((this->ptr_details)->progress) + '/' +
+                       std::to_string(percent) + "% | " +
+                       std::to_string((this->ptr_details)->progress) + '/' +
                        std::to_string((this->ptr_details)->full);
     // When the terminal does not have enough space
     if (line.size() > this->t_width)
-        // Replace the last three characters with "..."
-        // Bad: Should replace three characters preceding
-        //      terminal width
-        line.replace(this->t_width - 3, 3, "...");
+        // Caveat: line.replace function replaces the string starting from
+        // the character pointed by the first iterator to the character behind
+        // the second iterator but not the character pointed by the next
+        // iterator. Like line.replace(start, end, ""):
+        //     start            end
+        //       |               |
+        //       |               |
+        //       v               v
+        //     | A | B | C | D | E |
+        // Replaces A~D but not A~E.
+        line.replace(line.begin() + (this->t_width - 3), line.end(), "...");
     // Add a carriage return to overwrite the last line.
     *(this->ptr_outstream) << '\r' << line;
 }
