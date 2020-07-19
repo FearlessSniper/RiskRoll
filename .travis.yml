@@ -21,7 +21,7 @@ addons:
     update: true
 
 before_install:
-  - |-
+  - |
     # Install MSYS2
     case $TRAVIS_OS_NAME in
       windows)
@@ -42,7 +42,7 @@ before_install:
     esac
 
 before_cache:
-  - |-
+  - |
     case $TRAVIS_OS_NAME in
       windows)
         # https://unix.stackexchange.com/a/137322/107554
@@ -51,11 +51,11 @@ before_cache:
     esac
 
 install:
-  - |-
+  - |
     case $TRAVIS_OS_NAME in
       windows)
-        # Install needed packages for MSYS2
-        # gmp, cmake, g++
+        # Install needed packages for RiskRoll
+        # i.e. gmp, cmake, g++
         $msys2 pacman -S --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
         ;;
     esac
@@ -67,13 +67,21 @@ cache:
 
 script:
   - mkdir build && cd build
-  - cmake -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
+  - |
+    case $TRAVIS_OS_NAME in
+      linux)
+        cmake -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
+        ;;
+      windows)
+        cmake -G "MSYS Makefiles" -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
+        ;;
+    esac
   - cmake --build .
-  - |-
+  - |
     case $TRAVIS_OS_NAME in
       windows)
         # Pack up Windows binaries
-        tar -czf riskroll-windows-x86_64.tar.gz apps/compute-possibility/compute-possibility.exe apps/compute-combinations/compute-combinations.exe src/libRiskRoll.*\
+        tar -czf riskroll-windows-x86_64.tar.gz apps/compute-possibility/compute-possibility.exe apps/compute-combinations/compute-combinations.exe src/libRiskRoll.*
         ;;
     esac
 
