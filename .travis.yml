@@ -56,7 +56,7 @@ install:
       windows)
         # Install needed packages for MSYS2
         # gmp, cmake, g++
-        $msys2 pacman -S mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
+        $msys2 pacman -S --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
         ;;
     esac
 
@@ -84,4 +84,4 @@ deploy:
   file: riskroll-windows-x86_64.tar.gz
   on:
     repo: FearlessSniper/RiskRoll
-  skip_cleanup: "true"
+  cleanup: "false"
