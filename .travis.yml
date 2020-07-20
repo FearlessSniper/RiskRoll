@@ -40,13 +40,17 @@ before_install:
         ;;
     esac
 
+install:
+  - |
+    # Put back to install as "before_cache" is executed after build
+    # Install needed packages for RiskRoll
+    # i.e. gmp, cmake, g++
+    $msys2 pacman -S --needed --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
+
 before_cache:
   - |
     case $TRAVIS_OS_NAME in
       windows)
-        # Install needed packages for RiskRoll
-        # i.e. gmp, cmake, g++
-        $msys2 pacman -S --needed --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
         # Clean the repo to get rid unneeded cache
         # https://unix.stackexchange.com/a/137322/107554
         $msys2 pacman --sync --clean --noconfirm
@@ -54,6 +58,8 @@ before_cache:
     esac
 
 cache:
+  # Set timeout to five minutes
+  timeout: 300
   directories:
     - $HOME/AppData/Local/Temp/chocolatey
     - /C/tools/msys64
@@ -96,7 +102,7 @@ deploy:
     secure: AkZKBHzQa9kWCblzt+ma+/eEdPi3s0k0fHigooGEELxyma3crdEAYSGUvseMj4+ENKQk5dlVZbm/L2ps0OdPKlqjgFHwWVZhMYHqiwbestCaUfbIrk7X//nG0psB6F8yeU6byEOv7Hn9QKtn1ZdeLrygQAmnHdOrIUY+9UZ0L/kId7fgjjjFaKP5r88rfi2iUnlrw+n3qShcsvCUCU64J7SHQfpHx0qBdrK4htGv3c0BBpVN2wmwrFRI+kJ0sZxNoFsIGSK1LePPzd9FMIxPVM3wTDP31A4oJs9fv26gaNkmaqejWkiLg6Z59CbUDkvJCgTP7uk5Ru7n0VRgVcX/WbPsqyx8MaMBThPBAQoLEHX4Vq1q3Orno7ae+iofBDIEC5NFIKYBlrje/6xYN1fWFFIhp04CScwDYjHMnxmBFYJPDht3hVOcYIhxd7WlOvC3YGe5VQZS1nBxtrFWhrhoBUs8Uoaak5X+yRUjgwZ5dtROB9qfLJlsiZnVKK+8cB2ByJGhrEgqgdpc+jOU71BxbcsatshEkV9ad30MiQRWwcmAFiXMQq9cMopzgB6+rgDOpnJkt0t9y4wdvq5NJ5Yo7Q4REh5ClvyOBz5dl4qUDgYxUHLjy0FqVxIJraQ05pvBAcHHf/b1xwhFaejzCPTllTsXrjcPMCMjlT9vOgXeyH0=
   file:
     - riskroll-windows-x86_64.tar.gz
-    - riskroll-ubuntu-x86_65.tar.gz
+    - riskroll-ubuntu-x86_64.tar.gz
   on:
     repo: FearlessSniper/RiskRoll
   cleanup: "false"
