@@ -15,7 +15,6 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++
       - cmake
       - libgmp-dev
     update: true
@@ -45,18 +44,12 @@ before_cache:
   - |
     case $TRAVIS_OS_NAME in
       windows)
-        # https://unix.stackexchange.com/a/137322/107554
-        $msys2 pacman --sync --clean --noconfirm
-        ;;
-    esac
-
-install:
-  - |
-    case $TRAVIS_OS_NAME in
-      windows)
         # Install needed packages for RiskRoll
         # i.e. gmp, cmake, g++
-        $msys2 pacman -S --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
+        $msys2 pacman -S --needed --noconfirm mingw-w64-x86_64-gmp mingw-w64-x86_64-cmake
+        # Clean the repo to get rid unneeded cache
+        # https://unix.stackexchange.com/a/137322/107554
+        $msys2 pacman --sync --clean --noconfirm
         ;;
     esac
 
@@ -73,12 +66,24 @@ script:
         cmake -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
         ;;
       windows)
-        cmake -G "MSYS Makefiles" -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
+        $mingw64 cmake -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=RELEASE -D BUILD_SHARED_LIBS=ON ..
         ;;
     esac
-  - cmake --build .
   - |
     case $TRAVIS_OS_NAME in
+      linux)
+        cmake --build .
+        ;;
+      windows)
+        $mingw64 cmake --build .
+        ;;
+    esac
+  - |
+    case $TRAVIS_OS_NAME in
+      linux)
+        # Pack up Linux (Ubuntu) binaries
+        tar -czf "riskroll-ubuntu-$(uname -m).tar.gz" apps/compute-possibility/compute-possibility apps/compute-combinations/compute-combinations src/libRiskRoll.*
+        ;;
       windows)
         # Pack up Windows binaries
         tar -czf riskroll-windows-x86_64.tar.gz apps/compute-possibility/compute-possibility.exe apps/compute-combinations/compute-combinations.exe src/libRiskRoll.*
@@ -89,7 +94,9 @@ deploy:
   provider: releases
   api_key:
     secure: AkZKBHzQa9kWCblzt+ma+/eEdPi3s0k0fHigooGEELxyma3crdEAYSGUvseMj4+ENKQk5dlVZbm/L2ps0OdPKlqjgFHwWVZhMYHqiwbestCaUfbIrk7X//nG0psB6F8yeU6byEOv7Hn9QKtn1ZdeLrygQAmnHdOrIUY+9UZ0L/kId7fgjjjFaKP5r88rfi2iUnlrw+n3qShcsvCUCU64J7SHQfpHx0qBdrK4htGv3c0BBpVN2wmwrFRI+kJ0sZxNoFsIGSK1LePPzd9FMIxPVM3wTDP31A4oJs9fv26gaNkmaqejWkiLg6Z59CbUDkvJCgTP7uk5Ru7n0VRgVcX/WbPsqyx8MaMBThPBAQoLEHX4Vq1q3Orno7ae+iofBDIEC5NFIKYBlrje/6xYN1fWFFIhp04CScwDYjHMnxmBFYJPDht3hVOcYIhxd7WlOvC3YGe5VQZS1nBxtrFWhrhoBUs8Uoaak5X+yRUjgwZ5dtROB9qfLJlsiZnVKK+8cB2ByJGhrEgqgdpc+jOU71BxbcsatshEkV9ad30MiQRWwcmAFiXMQq9cMopzgB6+rgDOpnJkt0t9y4wdvq5NJ5Yo7Q4REh5ClvyOBz5dl4qUDgYxUHLjy0FqVxIJraQ05pvBAcHHf/b1xwhFaejzCPTllTsXrjcPMCMjlT9vOgXeyH0=
-  file: riskroll-windows-x86_64.tar.gz
+  file:
+    - riskroll-windows-x86_64.tar.gz
+    - riskroll-ubuntu-x86_65.tar.gz
   on:
     repo: FearlessSniper/RiskRoll
   cleanup: "false"
