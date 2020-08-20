@@ -1,7 +1,9 @@
-#ifdef __WIN32
+// For the Windows platform
+#if defined(__WIN32)
 #include <windows.h>
 #else
-#if defined(unix) || defined(__unix__) || defined(__unix)
+// For Linux and macOS (tested on both platforms)
+#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
 #include <sys/ioctl.h>
 #include <unistd.h>
 #endif
@@ -62,14 +64,14 @@ void ProgressBar::clear() {
 }
 
 // Platform dependent get console width function.
-#ifdef __WIN32
+#if defined(__WIN32)
 unsigned short ProgressBar::getConsoleWidth() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     return csbi.dwSize.X;
 }
 #else
-#if defined(unix) || defined(__unix__) || defined(__unix)
+#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__)) 
 unsigned short ProgressBar::getConsoleWidth() {
     struct winsize size;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
